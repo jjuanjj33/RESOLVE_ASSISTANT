@@ -7,9 +7,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 VECTOR_PATH = Path(__file__).parent / "chromadb_data"
 COLLECTION_NAME = "manual_resolve"
 
-PDF_PATH = "DaVinci_Resolve_19_Reference_Manual.pdf"
-ENRICHED_PATH = "manual_enriched.json"
-CHUNKS_PATH = "manual_chunks.json"
+PDF_PATH = Path(__file__).parent / "ingest" / "DaVinci_Resolve_19_Reference_Manual.pdf"
+ENRICHED_PATH = Path(__file__).parent / "ingest" / "manual_enriched.json"
+CHUNKS_PATH = Path(__file__).parent / "ingest" / "manual_chunks.json"
 
 EMBEDDING_MODEL = "text-embedding-3-small"
 CHAT_MODEL = "gpt-4o-mini"          # más barato para traducción/detección

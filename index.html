@@ -1,0 +1,60 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resolve RAG · Demo</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 24px; background:#0b0c10; color:#e5e7eb; }
+    .card { background:#111317; border:1px solid #23262d; border-radius:16px; padding:16px; margin-bottom:16px; }
+    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    textarea { width:100%; min-height:110px; padding:12px; border-radius:12px; border:1px solid #2b2f38; background:#0f1115; color:#e5e7eb; }
+    button { padding:10px 14px; border-radius:12px; border:1px solid #2b2f38; background:#1a1f29; color:#e5e7eb; cursor:pointer; }
+    button:disabled { opacity:.6; cursor:not-allowed; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#1a1f29; border:1px solid #2b2f38; margin:4px 6px 0 0; }
+    .muted { color:#9aa3b2; font-size:.9rem; }
+    .ok { color:#21c55d; } .err { color:#ef4444; }
+    details { background:#0f1115; border:1px dashed #2b2f38; border-radius:12px; padding:10px 12px; margin-top:8px; }
+    code, pre { background:#0f1115; border:1px solid #2b2f38; border-radius:8px; padding:8px; display:block; overflow:auto; }
+    a { color:#7dd3fc; }
+  </style>
+</head>
+<body>
+  <h1>Resolve RAG · Demo</h1>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between;">
+      <div class="muted">API: <span id="apiBase">http://localhost:8000</span></div>
+      <div id="health" class="muted">Comprobando salud…</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label for="q" class="muted">Pregunta</label>
+    <textarea id="q" placeholder="Ej.: ¿Cómo crear una transición personalizada en Fusion?"></textarea>
+    <div class="row" style="margin-top:10px;">
+      <label><input type="checkbox" id="debug"> debug</label>
+      <div style="flex:1"></div>
+      <button id="askBtn">Preguntar</button>
+      <button id="termsBtn" title="Sugerir términos para afinar la búsqueda">Sugerir términos</button>
+      <button id="healthBtn" title="Reintentar /health">Health</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Respuesta</h3>
+    <div id="answer" class="muted">—</div>
+    <div id="citations" class="muted" style="margin-top:8px;"></div>
+    <div id="debugBox" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Términos sugeridos</h3>
+    <div id="suggestions" class="muted">—</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

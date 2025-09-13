@@ -1,31 +1,8 @@
 import openai, chromadb
 from settings import *
+from llm import *
 from typing import List
 
-def detect_lang(text: str) -> str:
-    if not MULTILINGUAL: return "en"
-    msg = [
-        {"role":"system","content":"Devuelve solo el código ISO-639-1 del idioma del usuario."},
-        {"role":"user","content": text[:800]}
-    ]
-    out = openai.chat.completions.create(model=CHAT_MODEL, messages=msg, temperature=0)
-    return out.choices[0].message.content.strip().lower()[:2]
-
-def translate(text: str, target="en") -> str:
-    if target == "en":
-        sys = "Traduce al inglés técnico de posproducción, sin adornos."
-    else:
-        sys = f"Traduce al {target} claro y natural."
-    out = openai.chat.completions.create(
-        model=CHAT_MODEL,
-        messages=[{"role":"system", "content": sys},
-                  {"role":"user", "content": text[:2000]}],
-        temperature=0
-    )
-    return out.choices[0].message.content.strip()
-
-def embed(txt: str) -> List[float]:
-    return openai.embeddings.create(input=txt, model=EMBEDDING_MODEL).data[0].embedding
 
 def expand_queries(q: str, lang: str) -> List[str]:
     alts = [q]
