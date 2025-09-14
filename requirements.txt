@@ -1,0 +1,5 @@
+flask
+flask-cors
+openai>=1.0.0,<2
+chromadb>=0.5
+psycopg2-binary>=2.9

@@ -25,3 +25,17 @@ TEMPERATURE = 0.2
 QUERY_EXPANSIONS_EN = ["deliver page", "render", "quick export", "individual clips", "render this clip"]
 QUERY_EXPANSIONS_FR = ["rendu", "page Deliver", "exportation rapide", "clips individuels"]
 QUERY_EXPANSIONS_ES = ["render", "página Deliver", "exportación rápida", "clips individuales"]
+
+
+# --- DB (PostgreSQL / RDS) ---
+PG_HOST = os.getenv("PGHOST", "test.cxcwgyue8y8m.eu-west-3.rds.amazonaws.com")
+PG_PORT = int(os.getenv("PGPORT", "5432"))
+PG_DB   = os.getenv("PGDATABASE", "postgres")
+PG_USER = os.getenv("PGUSER", "postgres")
+PG_PASSWORD = os.getenv("AWS_BBDD_PASS")
+PG_SSLMODE = os.getenv("PGSSLMODE", "prefer")
+
+DB_CONFIG = {
+    "host": PG_HOST, "port": PG_PORT, "dbname": PG_DB,
+    "user": PG_USER, "password": PG_PASSWORD, "sslmode": PG_SSLMODE
+}

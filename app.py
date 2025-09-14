@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from retrieval import *
 from llm import *
+from db import log_qa
 
 APP_NAME = os.getenv("APP_NAME", "resolve-rag-api")
 PORT = int(os.getenv("PORT", "8000"))
@@ -35,6 +36,13 @@ def ask():
 
     # 2) Respuesta final con citas
     final_answer = answer(question, contexts, pages, lang)
+        
+    # 2.1) Log en BBDD (best-effort)
+    try:
+        row_id = log_qa(question, final_answer)
+        print(f"[DB] confirmado insert id={row_id}")
+    except Exception as e:
+        print(f"[DB] error insert: {e}")
 
     payload = {
         "answer": final_answer,

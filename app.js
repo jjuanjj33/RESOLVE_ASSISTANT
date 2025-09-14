@@ -1,28 +1,31 @@
-// app.js
+// app.js (versión robusta)
 const API_BASE = 'http://localhost:8000';
 
 const $ = (id) => document.getElementById(id);
-const setHTML = (el, html) => (el.innerHTML = html);
-const setText = (el, txt) => (el.textContent = txt);
-const setLoading = (btn, on) => (btn.disabled = !!on);
+const setHTML = (el, html) => (el && (el.innerHTML = html));
+const setText  = (el, txt) => (el && (el.textContent = txt));
+const setLoading = (btn, on) => (btn && (btn.disabled = !!on));
 
-$('apiBase').textContent = API_BASE;
+// si existe, mostrar base de API
+const apiBaseEl = $('apiBase');
+if (apiBaseEl) apiBaseEl.textContent = API_BASE;
 
 async function pingHealth() {
   try {
     const r = await fetch(`${API_BASE}/health`);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const j = await r.json();
-    setHTML($('health'), `<span class="ok">OK</span> · ${j.app || 'api'}`);
+    setText($('health'), `OK · ${j.name || ''} ${j.version ? `v${j.version}` : ''}`.trim());
   } catch (e) {
-    setHTML($('health'), `<span class="err">DOWN</span> · ${e.message}`);
+    setText($('health'), `Error: ${e.message}`);
   }
 }
 
 async function ask() {
   const btn = $('askBtn');
-  const q = $('q').value.trim();
-  const debug = $('debug').checked;
+  const qEl = $('q');
+  const q = (qEl?.value || '').trim();
+  const debug = Boolean($('debug')?.checked); // seguro aunque no exista
   if (!q) return;
 
   setLoading(btn, true);
@@ -59,7 +62,7 @@ async function ask() {
       setHTML($('debugBox'), `<h4>Debug</h4>${items || '<div class="muted">—</div>'}`);
     }
   } catch (e) {
-    setHTML($('answer'), `<span class="err">${e.message}</span>`);
+    setHTML($('answer'), `<span class="err">${escapeHTML(e.message)}</span>`);
   } finally {
     setLoading(btn, false);
   }
@@ -67,8 +70,9 @@ async function ask() {
 
 async function suggestTerms() {
   const btn = $('termsBtn');
-  const q = $('q').value.trim();
+  const q = ($('q')?.value || '').trim();
   if (!q) return;
+
   setLoading(btn, true);
   setText($('suggestions'), 'Buscando…');
 
@@ -82,31 +86,30 @@ async function suggestTerms() {
     if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
 
     const kws = Array.isArray(j.keywords) ? j.keywords : [];
-    if (!kws.length) {
-      setText($('suggestions'), '—');
-      return;
-    }
     setHTML($('suggestions'), kws.map(k => `<span class="pill">${escapeHTML(k)}</span>`).join(''));
   } catch (e) {
-    setHTML($('suggestions'), `<span class="err">${e.message}</span>`);
+    setHTML($('suggestions'), `<span class="err">${escapeHTML(e.message)}</span>`);
   } finally {
     setLoading(btn, false);
   }
 }
 
 function escapeHTML(s) {
-  return String(s)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;');
+  return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
 
-// UX rápido
-$('askBtn').addEventListener('click', ask);
-$('termsBtn').addEventListener('click', suggestTerms);
-$('healthBtn').addEventListener('click', pingHealth);
-$('q').addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'enter') ask();
+// Listeners (solo si existen los nodos)
+$('askBtn')?.addEventListener('click', ask);
+$('termsBtn')?.addEventListener('click', suggestTerms);
+$('healthBtn')?.addEventListener('click', pingHealth);
+
+// Enviar con Ctrl/Cmd + Enter desde el textarea
+$('q')?.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'enter') {
+    e.preventDefault();
+    ask();
+  }
 });
 
-pingHealth();
+// Ping salud sólo si hay hook visible/existente
+if ($('healthBtn')) pingHealth();
