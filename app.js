@@ -29,7 +29,7 @@ async function ask() {
   if (!q) return;
 
   setLoading(btn, true);
-  setText($('answer'), 'Pensando…');
+  setText($('answer'), 'Thinking…');
   setText($('citations'), '');
   setHTML($('debugBox'), '');
 
