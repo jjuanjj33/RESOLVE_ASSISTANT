@@ -1,5 +1,5 @@
 // app.js (versión robusta)
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://resolve-assistant.onrender.com';
 
 const $ = (id) => document.getElementById(id);
 const setHTML = (el, html) => (el && (el.innerHTML = html));
