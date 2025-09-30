@@ -1,14 +1,10 @@
 from typing import List, Union
-import os
-from openai import OpenAI
+from groq import Groq
+import openai
 from settings import *
 
-# Cliente OpenAI-compatible apuntando a Groq
-CLIENT = OpenAI(
-    base_url=os.getenv("OPENAI_BASE_URL", "https://api.groq.com/openai/v1"),
-    api_key=os.getenv("API_KEY_GROQ")
-    )
-
+# openai.api_key = OPENAI_API_KEY
+client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
 # Helpers internos
 def _build_rag_prompt(question: str, contexts: List[str], pages: List[Union[str, int]], lang_code: str) -> str:
@@ -44,7 +40,7 @@ def detect_lang(text: str) -> str:
         {"role": "system", "content": "Devuelve solo el código ISO-639-1 del idioma del usuario."},
         {"role": "user", "content": text[:800]},
     ]
-    out = CLIENT.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
+    out = openai.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
     return out.choices[0].message.content.strip().lower()[:2]
 
 
@@ -61,7 +57,7 @@ def translate(text: str, target: str = "en") -> str:
         {"role": "system", "content": system},
         {"role": "user", "content": text},
     ]
-    out = CLIENT.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
+    out = openai.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
     return out.choices[0].message.content.strip()
 
 
@@ -73,7 +69,7 @@ def embed(texts: Union[str, List[str]]) -> Union[List[float], List[List[float]]]
     """
     single = isinstance(texts, str)
     payload = [texts] if single else texts
-    resp = CLIENT.embeddings.create(model=EMBEDDING_MODEL, input=payload)
+    resp = openai.embeddings.create(model=EMBEDDING_MODEL, input=payload)
     embs = [d.embedding for d in resp.data]
     return embs[0] if single else embs
 
@@ -85,7 +81,7 @@ def answer(question: str, contexts: List[str], pages: List[Union[str, int]], lan
     - 'contexts' y 'pages' deben ir alineados (mismo orden/longitud).
     """
     prompt = _build_rag_prompt(question, contexts, pages, lang_code=lang)
-    rsp = CLIENT.chat.completions.create(
+    rsp = openai.chat.completions.create(
         model=ANSWER_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=TEMPERATURE,

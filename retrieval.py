@@ -1,4 +1,4 @@
-import openai, chromadb
+import chromadb
 from settings import *
 from llm import *
 from typing import List
