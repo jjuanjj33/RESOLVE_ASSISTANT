@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 VECTOR_PATH = Path(__file__).parent / "chromadb_data"
 COLLECTION_NAME = "manual_resolve"
@@ -10,7 +11,7 @@ PDF_PATH = Path(__file__).parent / "ingest" / "DaVinci_Resolve_19_Reference_Manu
 ENRICHED_PATH = Path(__file__).parent / "ingest" / "manual_enriched.json"
 CHUNKS_PATH = Path(__file__).parent / "ingest" / "manual_chunks.json"
 
-EMBEDDING_MODEL = "nomic-embed-text"          # embeddings en Groq
+EMBEDDING_MODEL = "text-embedding-3-large"          # embeddings en Groq
 CHAT_MODEL = "openai/gpt-oss-20b"             # más barato para traducción/detección
 ANSWER_MODEL = "openai/gpt-oss-120b"          # respuestas
 
