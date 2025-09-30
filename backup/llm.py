@@ -1,11 +1,6 @@
 from typing import List, Union
-import os
-from groq import Groq
 import openai
 from settings import *
-
-
-CLIENT = Groq(api_key=GROQ_API_KEY)
 
 openai.api_key = OPENAI_API_KEY
 
@@ -43,7 +38,7 @@ def detect_lang(text: str) -> str:
         {"role": "system", "content": "Devuelve solo el código ISO-639-1 del idioma del usuario."},
         {"role": "user", "content": text[:800]},
     ]
-    out = CLIENT.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
+    out = openai.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
     return out.choices[0].message.content.strip().lower()[:2]
 
 
@@ -60,7 +55,7 @@ def translate(text: str, target: str = "en") -> str:
         {"role": "system", "content": system},
         {"role": "user", "content": text},
     ]
-    out = CLIENT.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
+    out = openai.chat.completions.create(model=CHAT_MODEL, messages=msgs, temperature=0)
     return out.choices[0].message.content.strip()
 
 
@@ -84,7 +79,7 @@ def answer(question: str, contexts: List[str], pages: List[Union[str, int]], lan
     - 'contexts' y 'pages' deben ir alineados (mismo orden/longitud).
     """
     prompt = _build_rag_prompt(question, contexts, pages, lang_code=lang)
-    rsp = CLIENT.chat.completions.create(
+    rsp = openai.chat.completions.create(
         model=ANSWER_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=TEMPERATURE,
