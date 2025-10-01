@@ -11,7 +11,7 @@ PDF_PATH = Path(__file__).parent / "ingest" / "DaVinci_Resolve_19_Reference_Manu
 ENRICHED_PATH = Path(__file__).parent / "ingest" / "manual_enriched.json"
 CHUNKS_PATH = Path(__file__).parent / "ingest" / "manual_chunks.json"
 
-EMBEDDING_MODEL = "text-embedding-3-large"          # embeddings en Groq
+EMBEDDING_MODEL = "text-embedding-3-small"          # embeddings en Groq
 CHAT_MODEL = "openai/gpt-oss-20b"             # más barato para traducción/detección
 ANSWER_MODEL = "openai/gpt-oss-120b"          # respuestas
 
